@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+    <h1>Login</h1>
+
+    <form method="POST">
+
+        {{ form_login.csrf_token }}
+
+        <p>
+            {{ form_login.email.label }}<br>
+            {{ form_login.email }}
+        </p>
+
+        <p>
+            {{ form_login.senha.label }}<br>
+            {{ form_login.senha }}
+        </p>
+
+        <p>
+            {{ form_login.botao }}
+        </p>
+
+    </form>
+
+    <hr>
+
+    <p>Ainda não possui conta?</p>
+
+    <a href="{{ url_for('cadastro') }}">
+        <button>Criar Conta</button>
+    </a>
+
+</body>
+</html>
