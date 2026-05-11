@@ -22,12 +22,29 @@
         </p>
 
         <p>
+            {{ form_novo_livro.editora.label }}<br>
+            {{ form_novo_livro.editora }}
+        </p>
+
+        <p>
+            {{ form_novo_livro.paginas.label }}<br>
+            {{ form_novo_livro.paginas }}
+        </p>
+
+        <p>
+            {{ form_novo_livro.tipo_de_capa.label }}<br>
+            {{ form_novo_livro.tipo_de_capa }}
+        </p>
+
+        <p>
             {{ form_novo_livro.botao }}
         </p>
     </form>
 
     <p>
+        <button type="submit">
         <a href="{{ url_for('pagina_biblioteca') }}">Voltar para biblioteca</a>
+        </button>
     </p>
 
 </body>

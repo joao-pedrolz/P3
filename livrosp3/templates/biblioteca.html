@@ -9,20 +9,28 @@
     <h1>Lista de Livros</h1>
 
     <p>
+        <button type="submit">
         <a href="{{ url_for('pagina_novo_livro') }}">Cadastrar novo livro</a>
+        </button>
     </p>
 
     {% if biblioteca %}
         <ul>
             {% for livro in biblioteca %}
                 <li>
-                    <strong>{{ livro.titulo }}</strong> - {{ livro.autor }}
+                            <a href="{{ url_for('pagina_livro', id=livro.id) }}">
+                                {{ livro.titulo }}
+                            </a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
         <p>Nenhum livro cadastrado.</p>
     {% endif %}
+
+    <button type="submit">
+    <a href="{{  url_for('logout')  }}">Sair</a>
+    </button>
 
 </body>
 </html>

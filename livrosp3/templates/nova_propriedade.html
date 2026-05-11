@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Propriedade</title>
+</head>
+<body>
+
+    <h1>Nova Propriedade para {{ livro.titulo }}</h1>
+
+    <form method="POST">
+        <p>
+            <label>Atributo:</label><br>
+            <input type="text" name="atributo" placeholder="Ex: editora">
+        </p>
+
+        <p>
+            <label>Valor:</label><br>
+            <input type="text" name="valor" placeholder="Ex: Tor Books">
+        </p>
+
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <br>
+
+    <button type="submit">
+    <a href="{{ url_for('pagina_livro', id=livro.id) }}">Voltar</a>
+    </button>
+
+</body>
+</html>

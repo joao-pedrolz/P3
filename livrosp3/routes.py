@@ -1,5 +1,5 @@
 from flask import render_template, url_for, jsonify, request, redirect
-from flask_login import login_required
+from flask_login import login_required, login_user, logout_user, current_user
 from .database import db
 from .forms import FormLogin, FormCriarConta, FormNovoLivro
 from livrosp3 import bcrypt
@@ -17,6 +17,11 @@ def init_routes(app):
     @app.route("/", methods=["GET", "POST"])
     def homepage():
         form_login = FormLogin()
+        if form_login.validate_on_submit():
+            usuario = Usuario.query.filter_by(email=form_login.email.data).first()
+            if usuario and bcrypt.check_password_hash(usuario.senha, form_login.senha.data):
+                login_user(usuario)
+                return redirect(url_for("pagina_biblioteca"))
         return render_template("homepage.html",form_login=form_login)
 
 
@@ -36,8 +41,9 @@ def init_routes(app):
 
             db.session.add(usuario)
             db.session.commit()
+            login_user(usuario, remember=True)
 
-            return redirect(url_for("homepage"))
+            return redirect(url_for("pagina_biblioteca"))
 
         return render_template(
             "cadastro.html",
@@ -46,6 +52,7 @@ def init_routes(app):
 
 
     @app.route("/biblioteca", methods=["GET"])
+    @login_required
     def pagina_biblioteca():
         livros = Livro.query.all()
         return render_template(
@@ -55,6 +62,7 @@ def init_routes(app):
 
 
     @app.route("/biblioteca/novo", methods=["GET", "POST"])
+    @login_required
     def pagina_novo_livro():
         form_novo_livro = FormNovoLivro()
 
@@ -73,7 +81,91 @@ def init_routes(app):
             form_novo_livro=form_novo_livro
         )
 
+    @app.route("/logout")
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for("homepage"))
+    
+    @app.route("/biblioteca/<int:id>", methods=["GET"])
+    @login_required
+    def pagina_livro(id):
+        livro = Livro.query.get_or_404(id)
 
+        propriedades = Propriedades.query.filter_by(
+            livro_id=livro.id
+        ).all()
+
+        return render_template(
+            "livro.html",
+            livro=livro,
+            propriedades=propriedades,
+        )
+    
+    @app.route("/biblioteca/<int:id>/editar", methods=["GET", "POST"])
+    @login_required
+    def editar_livro(id):
+        livro = Livro.query.get_or_404(id)
+
+        propriedades = Propriedades.query.filter_by(
+            livro_id=livro.id
+        ).all()
+
+        if request.method == "POST":
+            livro.titulo = request.form.get("titulo")
+
+            for propriedade in propriedades:
+                novo_valor = request.form.get(f"propriedade_{propriedade.id}")
+                if novo_valor is not None:
+                    propriedade.valor = novo_valor
+
+            db.session.commit()
+
+            return redirect(url_for("pagina_livro", id=livro.id))
+
+        return render_template(
+            "editar_livro.html",
+            livro=livro,
+            propriedades=propriedades
+        )
+
+    @app.route("/biblioteca/<int:id>/propriedade/nova", methods=["GET", "POST"])
+    @login_required
+    def nova_propriedade(id):
+        livro = Livro.query.get_or_404(id)
+
+        if request.method == "POST":
+            atributo = request.form.get("atributo")
+            valor = request.form.get("valor")
+
+            nova = Propriedades(
+                livro_id=livro.id,
+                atributo=atributo,
+                valor=valor
+            )
+
+            db.session.add(nova)
+            db.session.commit()
+
+            return redirect(url_for("pagina_livro", id=livro.id))
+
+        return render_template("nova_propriedade.html", livro=livro)
+
+    @app.route("/biblioteca/<int:id>/excluir", methods=["POST"])
+    @login_required
+    def excluir_livro(id):
+        livro = Livro.query.get_or_404(id)
+
+
+        propriedades = Propriedades.query.filter_by(livro_id=livro.id).all()
+
+        for propriedade in propriedades:
+            db.session.delete(propriedade)
+
+        db.session.delete(livro)
+        db.session.commit()
+
+        return redirect(url_for("pagina_biblioteca"))
 
     # ROTAS API
 

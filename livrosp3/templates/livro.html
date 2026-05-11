@@ -1,17 +1,56 @@
-{% extends "homepage.html" %}
-
-{% block titulo %}
-{{  livro  }}
-{% endblock %}
-
-{% block body %}
 <body>
 
-<h1>Livro: {{  livro  }}</h1>
+    <h1>Livro: {{  livro.titulo  }}</h1>
 
-<a href="{{ url_for('homepage') }}"> Sair</a>
+    <ul>
+    {% for propriedade in propriedades %}
+        <li>
+            {{ propriedade.atributo }}: {{ propriedade.valor }}
+        </li>
+    {% endfor %}
+    </ul>
+
+    <p>
+        <a href="{{ url_for('nova_propriedade', id=livro.id) }}">
+            <button type="submit">
+            Adicionar Propriedades
+            </button>
+        </a>
+    </p>
+
+    <p>
+        <a href="{{ url_for('editar_livro', id=livro.id) }}">
+            <button type="submit">
+            Editar livro
+            </button>
+        </a>
+    </p>
+
+    <p>
+        <form method="POST" action="{{ url_for('excluir_livro', id=livro.id) }}">
+            <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este livro?')">
+                Excluir livro
+            </button>
+        </form>
+    </p>
+
+    <p>
+        <a href="{{ url_for('pagina_biblioteca') }}"> 
+            <button type="submit">
+            Voltar
+            </button>
+        </a>
+    </p>
+
+    <p>
+        <a href="{{ url_for('logout') }}">
+            <button type="submit">
+            Sair
+            </button>
+        </a>
+    </p>
 
 
 </body>
-{% endblock %}
+
 

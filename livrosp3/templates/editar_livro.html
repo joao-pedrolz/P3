@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Livro</title>
+</head>
+<body>
+
+    <h1>Editar Livro</h1>
+
+    <form method="POST">
+
+        <p>
+            <label>Título:</label><br>
+            <input type="text" name="titulo" value="{{ livro.titulo }}">
+        </p>
+
+        <h2>Propriedades</h2>
+
+        {% for propriedade in propriedades %}
+            <p>
+                <label>{{ propriedade.atributo }}:</label><br>
+                <input 
+                    type="text" 
+                    name="propriedade_{{ propriedade.id }}" 
+                    value="{{ propriedade.valor }}"
+                >
+            </p>
+        {% endfor %}
+
+        <button type="submit">Salvar Alterações</button>
+
+    </form>
+
+    <br>
+
+    <button type="submit">
+    <a href="{{ url_for('pagina_livro', id=livro.id) }}">
+        Cancelar
+    </a>
+    </button>
+
+</body>
+</html>

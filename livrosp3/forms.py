@@ -21,5 +21,8 @@ class FormCriarConta(FlaskForm):
 
 class FormNovoLivro(FlaskForm):
     titulo = StringField("Título", validators=[DataRequired()])
-    autor = StringField("Autor", validators=[DataRequired()])
+    autor = StringField("Autor")
+    editora = StringField("Editora")
+    paginas = StringField("Número de páginas")
+    tipo_de_capa = StringField("Tipo de capa")
     botao = SubmitField("Cadastrar Livro")
